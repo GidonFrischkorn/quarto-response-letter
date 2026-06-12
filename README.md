@@ -1,5 +1,7 @@
 # response-letter
 
+[![Test formats](https://github.com/GidonFrischkorn/quarto-response-letter/actions/workflows/test-format.yml/badge.svg?branch=main)](https://github.com/GidonFrischkorn/quarto-response-letter/actions/workflows/test-format.yml)
+
 A Quarto extension for writing **responses to reviewers** ("revise and
 resubmit" letters) that render to **PDF, DOCX, and HTML** from a single
 source file.
