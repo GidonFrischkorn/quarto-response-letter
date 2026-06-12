@@ -22,6 +22,10 @@ jobs:
         with:
           version: ${{ matrix.quarto }}
           tinytex: true
+        env:
+          # authenticated API calls avoid 403 rate limits when the action
+          # resolves the TinyTeX release
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Render template (all formats)
         run: quarto render template.qmd --to all
