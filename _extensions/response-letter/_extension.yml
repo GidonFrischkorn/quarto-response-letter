@@ -6,12 +6,34 @@ contributes:
   formats:
     common:
       number-sections: false
+      link-citations: true
       language:
         response-reviewer-label: "Reviewer"
+        response-editor-label: "Editor"
         response-comment-label: "Comment"
         response-reply-label: "Reply"
         response-changes-label: "Changes"
         response-quoted-label: "Manuscript"
+        response-summary-title: "Summary of Changes"
+        response-re-label: "Re:"
+        response-dear-label: "Dear"
+        response-round-label: "Revision"
+        response-status-done: "✓"
+        response-status-partial: "partially addressed"
+        response-status-declined: "respectfully declined"
+        response-status-todo: "TO DO"
+      crossref:
+        fig-title: "Response Figure"
+        fig-prefix: "Response Figure"
+        tbl-title: "Response Table"
+        tbl-prefix: "Response Table"
+      metadata:
+        response-letter:
+          colors:
+            comment: "#B22222"
+            reply: "#1E90FF"
+            changes: "#8FBC8F"
+            quoted: "#696969"
       filters:
         - response-letter.lua
     pdf:
@@ -22,6 +44,7 @@ contributes:
       citecolor: MidnightBlue
       papersize: a4
       fontsize: 11pt
+      fig-pos: "H"
       geometry:
         - margin=25mm
     docx:

@@ -2,7 +2,13 @@
 /template.docx
 /template.html
 /template_files/
-*.tex
+# local development & testing (kept out of the published repo for now)
+/tests/
+/template.tex
+/tests/*.tex
 *.log
 .quarto/
 .DS_Store
+
+/.luarc.json
+/REVISION-PLAN.md

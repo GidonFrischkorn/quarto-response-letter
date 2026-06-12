@@ -1,84 +1,192 @@
 ---
 title: "Response to Reviewers"
-subtitle: "Manuscript ID 2026-0123: A Tutorial on Things"
+shorttitle: "Response: Spaced Practice and Retention"   # running header (falls back to title)
 author:
   - Jane Doe
   - John Smith
 date: last-modified
+response-letter:
+  journal: "Journal of Behavioral Science"
+  manuscript:
+    id: "JBS-2026-0147"
+    title: "Effects of Spaced Practice on Long-Term Retention"
+    version: "revised manuscript with tracked changes"
+  round: 1
+  editor:
+    name: "Dr. Maria Keller"
+    role: "Action Editor"
+  closing: "Sincerely,"
+  signature: |
+    Jane Doe
+    on behalf of all authors
 format:
   response-letter-pdf: default
   response-letter-docx: default
   response-letter-html: default
 ---
 
-We thank the editor and both reviewers for their constructive feedback.
-Below we address each comment in turn: the reviewer's comment appears in a
-red box, our reply in a blue box, verbatim quotes from the revised
-manuscript in grey boxes, and the resulting changes in green boxes.
+<!-- A worked example: every feature of the extension appears at least once
+     below, each with a short note on when to use it. The README is the full
+     reference. Optional add-ons not shown here: set `response-letter.colors`
+     to retheme the boxes, `bibliography:`/`csl:` to cite literature inside
+     replies, and `language:` to localize the labels for non-English letters. -->
+
+Thank you for the opportunity to revise our manuscript. We have addressed every
+comment from you and both reviewers point-by-point below. Reviewer comments
+appear in red boxes, our replies in blue boxes, verbatim text from the revised
+manuscript in grey boxes, and the resulting changes in green boxes. All page
+numbers refer to the revised manuscript with tracked changes.
+
+<!-- The summary div is replaced at render with a linked list of every comment
+     that carries a summary="..." attribute, together with its status. Place it
+     where the summary belongs — conventionally right after this opening. Give
+     summary= only to the comments you want surfaced at the top. Instead of the
+     div you can set `summary: true` under response-letter: in the YAML header
+     (inserts it before the first section); `summary: false` suppresses it. -->
+
+::: {.response-summary}
+:::
+
+<!-- {.editor} starts the editor section: comments here are numbered E.1, E.2, …
+     with anchors #cmt-E-1. Put it before the reviewers. A `.comment .general`
+     is an unnumbered overall remark; a plain `.comment` in this section is the
+     first numbered editor point (E.1). -->
+
+# Editor {.editor}
+
+::: {.comment .general}
+Both reviewers find the question timely and the design sound. They converge,
+however, on the analysis: the sample-size justification and the robustness of
+the central effect both need strengthening before the paper can be accepted.
+:::
+
+::: {.reply}
+We thank the editor for handling our manuscript and for the concise synthesis
+of the reviews. We have strengthened both points the reviewers raise: the
+sample size is now justified by an a priori power analysis (see
+[Comment 1.1](#cmt-1-1)), and the central effect is reported under three
+analytic choices (see [Comment 1.2](#cmt-1-2)).
+:::
+
+::: {.comment summary="data and analysis scripts made openly available"}
+Please confirm that the data and analysis scripts are available, and state
+where, in line with the journal's open-science policy.
+:::
+
+::: {.reply status="done"}
+The data and analysis scripts are openly available on the OSF (link in the
+manuscript). We now state this in a Data Availability statement (p. 18).
+:::
+
+{{< pagebreak >}}
+
+<!-- {{< pagebreak >}} breaks the page in PDF and DOCX and is ignored in HTML.
+     Conventionally one between reviewers. Each plain `# Reviewer N` heading
+     starts the next reviewer and resets the comment counter to N.1. -->
 
 # Reviewer 1
 
-::: {.comment}
-The authors state that the default priors are weakly informative, but they
-neither show nor discuss the appropriateness of these priors for their
-model comparisons.
+::: {.comment summary="sample size justified by an a priori power analysis"}
+The study may be underpowered. The authors report a sample of 96 participants
+but give no justification for this number. Please report a power analysis or
+otherwise justify the sample size.
 :::
 
-::: {.reply}
-The concern is well-founded. We now state the default priors numerically in
-the main text:
+<!-- status= takes done | partial | declined | todo. "todo" prints a render
+     warning listing every unaddressed comment, which is useful while drafting;
+     resolve or remove all todo replies before submitting. Nesting note: a div
+     inside another div needs four colons on the outer fence — `::::` here
+     because the reply contains a `.quoted` box. -->
 
-::: {.quoted loc="Tutorial 1, Model Specification"}
-The package sets weakly informative default priors based on known parameter
-ranges: with cell means coding, each condition intercept receives a
-$\mathcal{N}(1, 0.5^2)$ prior.
+:::: {.reply status="done"}
+The reviewer is right that the original submission did not justify the sample
+size. We set the target sample a priori from a power analysis, which we now
+report in the Method:
+
+::: {.quoted loc="Method, p. 6"}
+A power analysis for the within-subjects comparison ($d_z = 0.35$,
+$\alpha = .05$, power $= .90$) indicated a required sample of 90 participants;
+we recruited 96 to allow for exclusions.
+:::
+::::
+
+<!-- A `.quoted` box holds verbatim text from the revised manuscript. loc= sets
+     its label, e.g. "Manuscript (Method, p. 6):". Quote the revised text so the
+     editor can check the change against the tracked-changes file. -->
+
+::: {.changes}
+- **Method > Participants**: a priori power analysis added (p. 6)
 :::
 
-We also added a prior sensitivity analysis. Markdown works natively inside
-replies, including tables:
+::: {.comment summary="central effect holds across three analytic choices"}
+The spacing effect in Table 2 might depend on how trials are aggregated. Please
+show that the effect is robust to reasonable alternative analyses.
+:::
 
-| Prior predictive | $BF_{10}$ | Favored |
+::: {.reply status="partial"}
+The aggregation choice deserves a check, and we agree. The spacing effect holds
+across the three analytic choices we considered, summarized in @tbl-robustness.
+A fully nonparametric reanalysis of the trial-level data is still running; we
+will add it if the editor considers it necessary, but the three analyses below
+already span the alternatives the reviewer raises. The same robustness bears on
+[Comment 2.1](#cmt-2-1), where Reviewer 2 asks how our estimate compares with
+prior work.
+
+<!-- Tables and figures labeled inside a reply are numbered separately from the
+     manuscript's ("Response Table 1") and cross-referenced with @tbl-… / @fig-….
+     They render inline inside the box; nothing floats. -->
+
+| Analysis | Effect ($d_z$) | 95% CI |
 |---|---|---|
-| Default | $6.1 \times 10^{7}$ | Model A |
-| Matched | $576$ | Model A |
+| Primary (mean per condition) | 0.41 | [0.20, 0.62] |
+| Trimmed means (10%) | 0.38 | [0.17, 0.59] |
+| Mixed-effects (trial-level) | 0.43 | [0.24, 0.61] |
+
+: The spacing effect under three analytic choices. {#tbl-robustness}
 :::
 
 ::: {.changes}
-- **Tutorial 1 > Model Specification**: default priors stated numerically
-- **Supplement 1, Section 1**: full prior sensitivity analysis added
-:::
-
-::: {.comment}
-The estimates in Table 2 appear unstable; please report their variability.
-:::
-
-::: {.reply}
-We agree and now report the median and range across 10 repetitions. This
-also addresses the related point raised in [Comment 2.1](#cmt-2-1) below.
-A deliberately long reply can be used to check that boxes break across
-pages in the PDF output. Lorem ipsum dolor sit amet, consectetur
-adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-laboris nisi ut aliquip ex ea commodo consequat.
-:::
-
-::: {.changes}
-- **Results**: all estimates reported as median with min--max range
+- **Results**: robustness analyses added (p. 11)
+- **Supplement S2**: full analytic details and code
 :::
 
 {{< pagebreak >}}
 
 # Reviewer 2
 
-::: {.comment}
-Please clarify how the proposed approach relates to the broader literature.
+::: {.comment summary="effect situated relative to prior estimates"}
+How does the size of the spacing effect here compare with previous estimates in
+the literature? The Discussion treats it as novel without situating it.
 :::
 
-::: {.reply}
-We added a paragraph relating the approach to prior work; see also our
-reply to [Comment 1.2](#cmt-1-2), which reports the new stability analysis.
+::: {.reply status="done"}
+We have added a paragraph situating our estimate against prior work. The effect
+we observe ($d_z = 0.41$) sits within the range reported in earlier studies, and
+the robustness analysis in [Comment 1.2](#cmt-1-2) shows the estimate is stable
+across analytic choices. We have toned down the "novel" framing accordingly.
 :::
 
 ::: {.changes}
-- **Introduction**: added paragraph relating the approach to prior work
+- **Discussion**: paragraph relating the effect to prior estimates added (p. 14)
+:::
+
+<!-- "declined" is for requests you do not act on. Decline rarely, and give a
+     reason the editor can weigh — scope, feasibility, or a different question. -->
+
+::: {.comment}
+A six-month follow-up would considerably strengthen the claims about long-term
+retention. I recommend collecting one.
+:::
+
+::: {.reply status="declined"}
+We see the value of a six-month follow-up and considered it seriously. For this
+revision we respectfully decline to collect new data: our claims concern the
+one-week interval we tested, which we now state explicitly, and a six-month
+follow-up would pose a different question rather than strengthen the present one.
+We name it as the natural next step in the Discussion.
+:::
+
+::: {.changes}
+- **Discussion**: retention claim scoped to the tested interval; six-month
+  follow-up named as future work (p. 15)
 :::

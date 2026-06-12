@@ -1,0 +1,49 @@
+name: Test formats
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  schedule:
+    - cron: "0 6 * * 1" # weekly: catch breakage from new Quarto releases
+  workflow_dispatch:
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        quarto: [release, pre-release]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: ${{ matrix.quarto }}
+          tinytex: true
+
+      - name: Render template (all formats)
+        run: quarto render template.qmd --to all
+
+      # regression documents are currently kept local; this step activates
+      # automatically once a tests/ directory is committed
+      - name: Render regression tests (all formats)
+        if: ${{ hashFiles('tests/*.qmd') != '' }}
+        run: |
+          for f in tests/*.qmd; do
+            quarto render "$f" --to all
+          done
+
+      - name: Upload rendered output
+        if: matrix.quarto == 'release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: rendered-output
+          path: |
+            template.pdf
+            template.docx
+            template.html
+            tests/*.pdf
+            tests/*.docx
+            tests/*.html
