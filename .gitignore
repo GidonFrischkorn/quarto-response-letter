@@ -1,0 +1,8 @@
+/template.pdf
+/template.docx
+/template.html
+/template_files/
+*.tex
+*.log
+.quarto/
+.DS_Store

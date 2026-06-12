@@ -1,0 +1,50 @@
+/* response-letter: HTML styling for the four response divs */
+
+div.comment,
+div.reply,
+div.changes,
+div.quoted {
+  padding: 0.6em 0.9em;
+  margin: 1em 0;
+  border-left: 4px solid;
+  border-radius: 3px;
+}
+
+div.comment {
+  background: #fbf4f4;
+  border-color: #b22222;
+  font-style: italic;
+}
+
+div.reply {
+  background: #f6faff;
+  border-color: #1e90ff;
+}
+
+div.changes {
+  background: #f1f7f1;
+  border-color: #8fbc8f;
+}
+
+div.quoted {
+  background: #f5f5f5;
+  border-color: #696969;
+  border-radius: 0;
+}
+
+/* labels injected by the Lua filter */
+div.box-label p {
+  margin: 0 0 0.35em 0;
+  font-style: normal;
+  letter-spacing: 0.02em;
+}
+
+div.box-label-comment p { color: #8c1a1a; }
+div.box-label-reply p   { color: #155fa8; }
+div.box-label-changes p { color: #3e6b3e; }
+div.box-label-quoted p  { color: #4a4a4a; font-size: 0.9em; }
+
+/* nested quote inside a reply keeps tighter spacing */
+div.reply div.quoted {
+  margin: 0.8em 0;
+}

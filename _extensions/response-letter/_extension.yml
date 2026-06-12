@@ -1,0 +1,34 @@
+title: Response Letter
+author: Gidon T. Frischkorn
+version: 0.1.0
+quarto-required: ">=1.4"
+contributes:
+  formats:
+    common:
+      number-sections: false
+      language:
+        response-reviewer-label: "Reviewer"
+        response-comment-label: "Comment"
+        response-reply-label: "Reply"
+        response-changes-label: "Changes"
+        response-quoted-label: "Manuscript"
+      filters:
+        - response-letter.lua
+    pdf:
+      include-in-header: header.tex
+      colorlinks: true
+      linkcolor: MidnightBlue
+      urlcolor: Teal
+      citecolor: MidnightBlue
+      papersize: a4
+      fontsize: 11pt
+      geometry:
+        - margin=25mm
+    docx:
+      reference-doc: reference.docx
+    html:
+      css: response-letter.css
+      toc: true
+      toc-depth: 1
+      toc-location: left
+      embed-resources: true

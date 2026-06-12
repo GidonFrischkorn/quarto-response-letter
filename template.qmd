@@ -1,0 +1,84 @@
+---
+title: "Response to Reviewers"
+subtitle: "Manuscript ID 2026-0123: A Tutorial on Things"
+author:
+  - Jane Doe
+  - John Smith
+date: last-modified
+format:
+  response-letter-pdf: default
+  response-letter-docx: default
+  response-letter-html: default
+---
+
+We thank the editor and both reviewers for their constructive feedback.
+Below we address each comment in turn: the reviewer's comment appears in a
+red box, our reply in a blue box, verbatim quotes from the revised
+manuscript in grey boxes, and the resulting changes in green boxes.
+
+# Reviewer 1
+
+::: {.comment}
+The authors state that the default priors are weakly informative, but they
+neither show nor discuss the appropriateness of these priors for their
+model comparisons.
+:::
+
+::: {.reply}
+The concern is well-founded. We now state the default priors numerically in
+the main text:
+
+::: {.quoted loc="Tutorial 1, Model Specification"}
+The package sets weakly informative default priors based on known parameter
+ranges: with cell means coding, each condition intercept receives a
+$\mathcal{N}(1, 0.5^2)$ prior.
+:::
+
+We also added a prior sensitivity analysis. Markdown works natively inside
+replies, including tables:
+
+| Prior predictive | $BF_{10}$ | Favored |
+|---|---|---|
+| Default | $6.1 \times 10^{7}$ | Model A |
+| Matched | $576$ | Model A |
+:::
+
+::: {.changes}
+- **Tutorial 1 > Model Specification**: default priors stated numerically
+- **Supplement 1, Section 1**: full prior sensitivity analysis added
+:::
+
+::: {.comment}
+The estimates in Table 2 appear unstable; please report their variability.
+:::
+
+::: {.reply}
+We agree and now report the median and range across 10 repetitions. This
+also addresses the related point raised in [Comment 2.1](#cmt-2-1) below.
+A deliberately long reply can be used to check that boxes break across
+pages in the PDF output. Lorem ipsum dolor sit amet, consectetur
+adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+laboris nisi ut aliquip ex ea commodo consequat.
+:::
+
+::: {.changes}
+- **Results**: all estimates reported as median with min--max range
+:::
+
+{{< pagebreak >}}
+
+# Reviewer 2
+
+::: {.comment}
+Please clarify how the proposed approach relates to the broader literature.
+:::
+
+::: {.reply}
+We added a paragraph relating the approach to prior work; see also our
+reply to [Comment 1.2](#cmt-1-2), which reports the new stability analysis.
+:::
+
+::: {.changes}
+- **Introduction**: added paragraph relating the approach to prior work
+:::
