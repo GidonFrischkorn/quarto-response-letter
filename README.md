@@ -11,6 +11,16 @@ paragraph styles in Word, CSS boxes in HTML. Letter metadata (journal,
 manuscript ID, editor, revision round) becomes a letterhead; reply statuses
 and a generated summary of changes keep multi-round revisions organized.
 
+## What it looks like
+
+| Letterhead & summary of changes | Numbered response boxes |
+| --- | --- |
+| [![First page of the rendered PDF: letterhead with manuscript ID, journal and revision round, salutation, a linked summary of changes, and the editor section with comment and reply boxes](examples/example-letterhead.png)](examples/example.pdf) | [![A reviewer section of the rendered PDF: red comment boxes, blue replies with a checkmark status label, a nested grey manuscript quote, green changes boxes, and a table numbered Response Table 1 under the running header](examples/example-boxes.png)](examples/example.pdf) |
+
+Both pages come from [`template.qmd`](template.qmd) — the same source
+renders to [PDF](examples/example.pdf), [DOCX](examples/example.docx), and
+[HTML](examples/example.html) (click an image for the full PDF).
+
 ## Installation
 
 ```bash
@@ -230,7 +240,9 @@ CI renders `template.qmd` to all three formats against Quarto release and
 pre-release (weekly), catching breakage from new Quarto versions. See
 `CHANGELOG.md` for versions. `tools/make_reference_docx.py` regenerates
 `reference.docx` (palette, box styles, running header) from the defaults
-in `_extension.yml`.
+in `_extension.yml`. After changing the template or styles, refresh
+`examples/` from the rendered outputs and regenerate the README
+screenshots, e.g. `pdftoppm -r 130 -png -f 1 -l 1 examples/example.pdf`.
 
 ## License
 
