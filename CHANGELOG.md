@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 (unreleased) — initial release
+## 0.1.0 (2026-06-12) — initial release
 
 A Quarto format extension for point-by-point responses to reviewers,
 rendering PDF, DOCX, and HTML from one source file. Design informed by
