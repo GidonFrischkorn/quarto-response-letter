@@ -46,6 +46,7 @@ jobs:
           name: rendered-output
           path: |
             template.pdf
+            template-typst.pdf
             template.docx
             template.html
             tests/*.pdf

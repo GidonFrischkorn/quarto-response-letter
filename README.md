@@ -3,13 +3,14 @@
 [![Test formats](https://github.com/GidonFrischkorn/quarto-response-letter/actions/workflows/test-format.yml/badge.svg?branch=main)](https://github.com/GidonFrischkorn/quarto-response-letter/actions/workflows/test-format.yml)
 
 A Quarto extension for writing **responses to reviewers** ("revise and
-resubmit" letters) that render to **PDF, DOCX, and HTML** from a single
+resubmit" letters) that render to **PDF, DOCX, HTML, and Typst** from a single
 source file.
 
 Reviewer comments, author replies, manuscript changes, and verbatim quotes
 from the revised manuscript each get a visually distinct, auto-numbered box
 in every output format — colored `tcolorbox` panels in PDF, shaded
-paragraph styles in Word, CSS boxes in HTML. Letter metadata (journal,
+paragraph styles in Word, CSS boxes in HTML, native `block()` panels in
+Typst (a much faster PDF path). Letter metadata (journal,
 manuscript ID, editor, revision round) becomes a letterhead; reply statuses
 and a generated summary of changes keep multi-round revisions organized.
 
@@ -60,6 +61,8 @@ format:
   response-letter-pdf: default
   response-letter-docx: default
   response-letter-html: default
+  response-letter-typst:           # fast PDF; see "Format notes"
+    output-file: response-typst.pdf
 ---
 
 Thank you for the opportunity to revise our manuscript. ...
@@ -113,7 +116,7 @@ without a letterhead.
 | `manuscript.version` | reserved for stating what page/line numbers refer to (use it in your opening paragraph) |
 | `colors` | box palette override, e.g. `colors: {reply: "#7A28CB"}` (PDF + HTML) |
 | `summary: true / false` | `true` inserts the Summary of Changes before the first section; `false` suppresses it (overrides any `.response-summary` div) |
-| `running-header: false` | disables the PDF running header |
+| `running-header: false` | disables the running header (PDF and Typst) |
 
 ### Sections and numbering
 
@@ -163,11 +166,11 @@ justified by an a priori power analysis". Two ways to include it:
 
 ### Running headline
 
-From page 2 of the PDF, a running header shows `shorttitle` (or `title`)
-on the left and the current section — "Reviewer 1", "Editor" — on the
-right. In DOCX the header uses Word fields (document title + current
-`# Reviewer N` heading; field values appear once Word repaginates, e.g. on
-open or print preview). HTML has no pages; the table of contents covers
+From page 2 of the PDF (LaTeX and Typst alike), a running header shows
+`shorttitle` (or `title`) on the left and the current section — "Reviewer 1",
+"Editor" — on the right. In DOCX the header uses Word fields (document title +
+current `# Reviewer N` heading; field values appear once Word repaginates, e.g.
+on open or print preview). HTML has no pages; the table of contents covers
 navigation.
 
 ### Figures, tables, citations
@@ -177,7 +180,8 @@ figures, so "Figure 3" in a reply unambiguously means the manuscript:
 labeled figures/tables are captioned **Response Figure 1** / **Response
 Table 1** and referenced with the usual `@fig-...` / `@tbl-...` syntax.
 They render inline inside reply boxes (nothing floats — `fig-pos: H` is
-the PDF default). Override the names via the standard `crossref` options.
+the LaTeX PDF default, and Typst has no floats to escape the box). Override
+the names via the standard `crossref` options.
 
 Citations work as in any Quarto document. Point `bibliography:` at the same
 `.bib` file as your manuscript so quoted revised text resolves without
@@ -208,7 +212,8 @@ language:
 
 | Format | Styling | Notes |
 | --- | --- | --- |
-| PDF | breakable `tcolorbox` panels | long boxes split cleanly across pages; running header via fancyhdr |
+| PDF (`response-letter-pdf`) | breakable `tcolorbox` panels | long boxes split cleanly across pages; running header via fancyhdr |
+| Typst (`response-letter-typst`) | native `block()` panels | **fast PDF** for drafting — same boxes, letterhead, summary, status badges, and running header as the LaTeX PDF, compiled in a fraction of the time. Both formats write `.pdf`, so give one an `output-file` to avoid a name clash. |
 | DOCX | shaded paragraph styles from `reference.docx` | ideal for co-author comments and tracked changes |
 | HTML | CSS boxes, left-hand table of contents | self-contained file (`embed-resources: true`) |
 
@@ -219,16 +224,20 @@ paragraph per item with a literal bullet/number (styles
 shading stays continuous; the items are plain paragraphs rather than Word
 list objects.
 
-**Symbols in PDF:** prefer math mode (`$\approx$`, `$\times$`) over the
-literal Unicode characters `≈`/`×`, which some LaTeX fonts silently drop.
-(The status checkmark is handled for you.)
+**Symbols in PDF:** in the LaTeX PDF, prefer math mode (`$\approx$`,
+`$\times$`) over the literal Unicode characters `≈`/`×`, which some LaTeX
+fonts silently drop. (The status checkmark is handled for you.) The Typst
+PDF and HTML render Unicode directly, so this caveat is LaTeX-only.
 
 ## Customizing
 
 - **Box colors**: set `response-letter: colors:` in the document YAML —
-  one palette drives PDF and HTML.
+  one palette drives PDF, HTML, and Typst.
 - **PDF box geometry/spacing**: edit `_extensions/response-letter/header.tex`
   (standard `tcolorbox` options; colors are injected, edit the YAML instead).
+- **Typst box geometry/spacing**: the box functions (`rl-comment`, … ) and the
+  page header are injected by `response-letter.lua` (the `target == "typst"`
+  branch of `inject_theme`); edit them there. Colors come from the YAML palette.
 - **Word styles**: edit the styles `Response Comment`, `Response Reply`,
   `Response Changes`, `Response Quote`, and `Response Label` in
   `_extensions/response-letter/reference.docx`, or rebuild it (palette and
@@ -238,7 +247,7 @@ literal Unicode characters `≈`/`×`, which some LaTeX fonts silently drop.
 
 ## Development
 
-CI renders `template.qmd` to all three formats against Quarto release and
+CI renders `template.qmd` to all four formats against Quarto release and
 pre-release (weekly), catching breakage from new Quarto versions. See
 `CHANGELOG.md` for versions. `tools/make_reference_docx.py` regenerates
 `reference.docx` (palette, box styles, running header) from the defaults

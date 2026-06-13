@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.2.0 (2026-06-13) — Typst output format
+
+- **Typst format** (`response-letter-typst`): a fourth output that compiles a
+  PDF through Typst — much faster than the LaTeX path, ideal for drafting. It
+  reproduces the full extension feature set: the four colored boxes (native
+  `block()` panels, palette from the same `response-letter: colors:` source of
+  truth), letterhead and closing, auto-numbered comments with working
+  cross-reference anchors, reply status badges (including the `todo` render
+  warning), the Summary of Changes, response figures/tables inside reply
+  boxes, citations after the closing, localized labels, and the
+  shorttitle + current-section running header.
+- The Typst boxes and running header are injected by `response-letter.lua`
+  (no static asset ships, unlike `header.tex`/`.css`/`reference.docx`), so the
+  color palette stays a single source of truth across PDF, HTML, and Typst.
+- **Note:** `response-letter-pdf` and `response-letter-typst` both write a
+  `.pdf`; set `output-file` on one to avoid a name clash when rendering both
+  (e.g. with `--to all`). The bundled `template.qmd` and tests do this.
+
 ## 0.1.0 (2026-06-12) — initial release
 
 A Quarto format extension for point-by-point responses to reviewers,

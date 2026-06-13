@@ -1,6 +1,6 @@
 title: Response Letter
 author: Gidon T. Frischkorn
-version: 0.1.0
+version: 0.2.0
 quarto-required: ">=1.4"
 contributes:
   formats:
@@ -55,3 +55,13 @@ contributes:
       toc-depth: 1
       toc-location: left
       embed-resources: true
+    typst:
+      papersize: a4
+      fontsize: 11pt
+      # Typst consumes `margin` as a dict (x/y), unlike the pdf `geometry` list.
+      margin:
+        x: 25mm
+        y: 25mm
+      # No static asset ships for Typst: response-letter.lua injects the colored
+      # box functions and the running header. Colors/crossref/language inherit
+      # from `common`.

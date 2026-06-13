@@ -109,6 +109,13 @@ local docx_style = {
   quoted  = "Response Quote",
 }
 
+local typst_fn = {
+  comment = "rl-comment",
+  reply   = "rl-reply",
+  changes = "rl-changes",
+  quoted  = "rl-quoted",
+}
+
 local function warn(msg)
   if quarto and quarto.log and quarto.log.warning then
     quarto.log.warning("response-letter: " .. msg)
@@ -181,10 +188,12 @@ local function target_format()
   if quarto and quarto.doc then
     if quarto.doc.is_format("latex") then return "latex" end
     if quarto.doc.is_format("docx") then return "docx" end
+    if quarto.doc.is_format("typst") then return "typst" end
     return "html"
   end
   if FORMAT:match("latex") then return "latex" end
   if FORMAT:match("docx") then return "docx" end
+  if FORMAT:match("typst") then return "typst" end
   return "html"
 end
 
@@ -212,10 +221,24 @@ local function latex_escape(s)
   }))
 end
 
--- "Reviewer 2" / "Editor": the text shown in the PDF running header.
+-- Escape a string for a Typst double-quoted string literal.
+local function typst_str(s)
+  return (s:gsub("\\", "\\\\"):gsub('"', '\\"'))
+end
+
+-- "Reviewer 2" / "Editor": the text shown in the running header. LaTeX sets
+-- \rightmark; Typst drops a hidden <rl-mark> the page header queries for the
+-- current section (an empty text clears it, matching \markright{} for
+-- .unnumbered sections).
 local function section_mark(text)
-  if target ~= "latex" or not cfg.running_header then return nil end
-  return pandoc.RawBlock("latex", "\\markright{" .. latex_escape(text) .. "}")
+  if not cfg.running_header then return nil end
+  if target == "latex" then
+    return pandoc.RawBlock("latex", "\\markright{" .. latex_escape(text) .. "}")
+  elseif target == "typst" then
+    return pandoc.RawBlock("typst",
+      string.format('#metadata("%s")<rl-mark>', typst_str(text)))
+  end
+  return nil
 end
 
 local function comment_number()
@@ -308,6 +331,22 @@ render.latex = function(kind, div, content)
   blocks:insert(pandoc.RawBlock("latex", "\\begin{" .. latex_env[kind] .. "}"))
   blocks:extend(content)
   blocks:insert(pandoc.RawBlock("latex", "\\end{" .. latex_env[kind] .. "}"))
+  return blocks
+end
+
+render.typst = function(kind, div, content)
+  local blocks = pandoc.List()
+  blocks:insert(pandoc.RawBlock("typst", "#" .. typst_fn[kind] .. "["))
+  blocks:extend(content)
+  -- A Typst label attaches to the PRECEDING element, so the cross-ref anchor
+  -- must follow the box. (The empty-span-before-the-box trick render.latex
+  -- uses yields an unattached label and a fatal "label does not exist" error
+  -- when something #link()s to it.)
+  if div.identifier ~= "" then
+    blocks:insert(pandoc.RawBlock("typst", "]\n<" .. div.identifier .. ">"))
+  else
+    blocks:insert(pandoc.RawBlock("typst", "]"))
+  end
   return blocks
 end
 
@@ -705,6 +744,69 @@ local function inject_theme()
     end
     quarto.doc.include_text("in-header",
       "<style>\n:root {\n" .. table.concat(vars, "\n") .. "\n}\n</style>")
+  elseif target == "typst" then
+    -- No static Typst asset ships (unlike header.tex / .css); the colored box
+    -- functions are defined here so the palette stays the single source of
+    -- truth. Tints use .lighten(100-N%) to match header.tex's rl<Kind>!N mix.
+    local lines = pandoc.List()
+    for _, kind in ipairs(KINDS) do
+      local h = hex6(cfg.colors[kind])
+      if h then
+        lines:insert(string.format('#let rl-%s-color = rgb("#%s")', kind, h))
+      else
+        warn(string.format("invalid color '%s' for '%s' (expected #RRGGBB)",
+          cfg.colors[kind], kind))
+      end
+    end
+    lines:insert([==[#let rl-comment(body) = block(
+  fill: rl-comment-color.lighten(95%), stroke: (left: 2.5pt + rl-comment-color),
+  inset: (left: 7pt, right: 7pt, top: 6pt, bottom: 6pt),
+  radius: 1pt, above: 10pt, below: 10pt, width: 100%,
+)[#text(style: "italic")[#body]]]==])
+    lines:insert([==[#let rl-reply(body) = block(
+  fill: rl-reply-color.lighten(96%), stroke: (left: 2.5pt + rl-reply-color),
+  inset: (left: 7pt, right: 7pt, top: 6pt, bottom: 6pt),
+  radius: 1pt, above: 10pt, below: 10pt, width: 100%,
+)[#body]]==])
+    lines:insert([==[#let rl-changes(body) = block(
+  fill: rl-changes-color.lighten(88%), stroke: (left: 2.5pt + rl-changes-color),
+  inset: (left: 7pt, right: 7pt, top: 6pt, bottom: 6pt),
+  radius: 1pt, above: 10pt, below: 10pt, width: 100%,
+)[#body]]==])
+    lines:insert([==[#let rl-quoted(body) = block(
+  fill: rl-quoted-color.lighten(92%), stroke: (left: 3pt + rl-quoted-color),
+  inset: (left: 9pt, right: 7pt, top: 6pt, bottom: 6pt),
+  radius: 0pt, above: 8pt, below: 8pt, width: 100%,
+)[#body]]==])
+    -- Color links/refs/citations to match the LaTeX PDF, which sets colorlinks
+    -- with linkcolor/citecolor: MidnightBlue and urlcolor: Teal (Typst renders
+    -- them black by default). URLs (string dest) get Teal; internal links,
+    -- cross-references, and citations get MidnightBlue.
+    lines:insert('#show ref: set text(fill: rgb("#2D2F92"))')
+    lines:insert('#show cite: set text(fill: rgb("#2D2F92"))')
+    lines:insert([==[#show link: it => text(
+  fill: if type(it.dest) == str { rgb("#008080") } else { rgb("#2D2F92") }, it)]==])
+    if cfg.running_header then
+      lines:insert(string.format('#let rl-short = "%s"',
+        typst_str(cfg.shorttitle or "")))
+      -- Page header: shorttitle (left) + current section (right), skipped on
+      -- the title page. The section text comes from the <rl-mark> markers
+      -- section_mark() drops after each heading.
+      lines:insert([==[#set page(header: context {
+  let n = here().page()
+  if n > 1 {
+    // last marker on or before this page (matches LaTeX \rightmark / botmark);
+    // .before(here()) would miss a section heading at the very top of the page.
+    let m = query(<rl-mark>).filter(it => it.location().page() <= n)
+    let sec = if m.len() > 0 { m.last().value } else { "" }
+    set text(size: 9pt, style: "italic")
+    box(width: 100%, stroke: (bottom: 0.2pt), inset: (bottom: 3pt))[
+      #rl-short #h(1fr) #sec
+    ]
+  }
+})]==])
+    end
+    quarto.doc.include_text("in-header", table.concat(lines, "\n"))
   end
 end
 

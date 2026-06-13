@@ -23,6 +23,9 @@ format:
   response-letter-pdf: default
   response-letter-docx: default
   response-letter-html: default
+  response-letter-typst:
+    # fast PDF; distinct name so it doesn't clobber response-letter-pdf's output
+    output-file: template-typst.pdf
 ---
 
 <!-- A worked example: every feature of the extension appears at least once
@@ -78,9 +81,10 @@ statement (p. 18).
 :::
 
 <!-- Each plain `# Reviewer N` heading starts the next reviewer and resets the
-     comment counter to N.1. Use {{< pagebreak >}} between reviewers (see below,
-     before Reviewer 2) to break the page in PDF and DOCX; it is ignored in
-     HTML. -->
+     comment counter to N.1. Use {{< pagebreak >}} before a reviewer to start it
+     on a fresh page in PDF, Typst, and DOCX; it is ignored in HTML. -->
+
+{{< pagebreak >}}
 
 # Reviewer 1
 
