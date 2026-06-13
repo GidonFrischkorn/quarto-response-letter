@@ -255,6 +255,13 @@ in `_extension.yml`. After changing the template or styles, refresh
 `examples/` from the rendered outputs and regenerate the README
 screenshots, e.g. `pdftoppm -r 130 -png -f 1 -l 1 examples/example.pdf`.
 
+## Acknowledgments
+
+Inspired by prior response-letter tooling, notably the LaTeX template
+[klb2/review-response-template](https://github.com/klb2/review-response-template)
+and the Typst reviewer-response memo in
+[hikmah-academic-quarto](https://github.com/andrewheiss/hikmah-academic-quarto).
+
 ## License
 
-MIT. Contributions and issues welcome.
+MIT (see `LICENSE`). Contributions and issues welcome.
